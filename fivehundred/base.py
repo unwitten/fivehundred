@@ -1,5 +1,5 @@
 """
-Classic to represent basic objects like cards.
+Classic to represent basic objects like cards, bids and players.
 """
 from collections import namedtuple
 from enum import Enum
@@ -37,6 +37,15 @@ class Card(namedtuple("Card", ["value", "suit"])):
             return self.value.value
 
         return "{} of {}".format(self.value.value, self.suit.value)  # f strings where are you?
+
+
+class Player:
+    def __init__(self, name, hand):
+        self.name = name
+        self.hand = []
+
+    def __str__(self):
+        return self.name
 
 
 def suit_is_red(suit):
