@@ -36,7 +36,7 @@ class Card(namedtuple("Card", ["value", "suit"])):
         if self.value == CardValues.Joker:
             return self.value.value
 
-        return "{} of {}".format(self.value.value, self.suit.value)  # f strings where are you?
+        return f"{self.value.value} of {self.suit.value}"
 
 
 class Player:
