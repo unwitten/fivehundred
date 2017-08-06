@@ -48,10 +48,14 @@ class Player:
         return self.name
 
 
-def suit_is_red(suit):
+def suit_is_red(suit: CardSuits):
     if suit in {CardSuits.Diamonds, CardSuits.Hearts}:
         return True
     return False
+
+
+def card_is_red(card: Card):
+    return suit_is_red(card.suit)
 
 
 def gen_game_deck():
@@ -63,7 +67,6 @@ def gen_game_deck():
 
         for suit in CardSuits:
             # Only red suits contain 4's
-            if value == CardValues.Four:
-                if not suit_is_red(suit):
-                    continue
+            if value == CardValues.Four and not suit_is_red(suit):
+                continue
             yield Card(value, suit)
