@@ -16,7 +16,7 @@ setup(
     version=version,
     packages=find_packages(exclude=['tests']),
     description="An implementation of the card game Five Hundred in Python",
-    author='unwitten, kyluca',
+    author='unwitten, kyluca, ShaunKarran',
     license="MIT",
     url="https://github.com/unwitten/fivehundred",
     include_package_data=True,
