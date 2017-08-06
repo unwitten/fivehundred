@@ -8,3 +8,5 @@
 * A way to deal the cards
 * A way to validate a bid
 * A way to validate user input at each turn
+* A way to represent a player
+* An AI to play against!
