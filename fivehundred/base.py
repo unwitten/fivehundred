@@ -27,7 +27,7 @@ class CardValues(Enum):
     Joker = 'Joker'
 
 
-# lightweight object to hold information about a person
+# lightweight object to hold information about a card
 class Card(namedtuple("Card", ["value", "suit"])):
     __slots__ = ()
 
