@@ -27,6 +27,25 @@ class CardValues(Enum):
     Joker = 'Joker'
 
 
+class BidTypes(Enum):
+    Spades = 'Spades'
+    Clubs = 'Clubs'
+    Diamonds = 'Diamonds'
+    Hearts = 'Hearts'
+    NoTrumps = 'NoTrumps'
+    Misere = 'Misere'
+    OpenMisere = 'OpenMisere'
+
+
+BASE_BID_VALUES = {
+    BidTypes.Spades: 40,
+    BidTypes.Clubs: 60,
+    BidTypes.Diamonds: 80,
+    BidTypes.Hearts: 100,
+    BidTypes.NoTrumps: 120
+}
+
+
 # lightweight object to hold information about a card
 class Card(namedtuple("Card", ["value", "suit"])):
     __slots__ = ()
@@ -37,6 +56,18 @@ class Card(namedtuple("Card", ["value", "suit"])):
             return self.value.value
 
         return f"{self.value.value} of {self.suit.value}"
+
+
+# lightweight object to hold information about a bid
+class Bid(namedtuple("Bid", ["bid_type", "number", "points"])):
+    __slots__ = ()
+
+    def __str__(self):
+        # Special case when Misere
+        if self.bid_type in {BidTypes.Misere, BidTypes.OpenMisere}:
+            return f"{self.bid_type.value} ({self.points})"
+
+        return f"{self.number} {self.bid_type.value} ({self.points})"
 
 
 class Player:
@@ -70,3 +101,26 @@ def gen_game_deck():
             if value == CardValues.Four and not suit_is_red(suit):
                 continue
             yield Card(value, suit)
+
+
+def get_bid_points(bid_type, number):
+    # Special case for Misere and OpenMisere
+    if bid_type == BidTypes.Misere:
+        return 250
+    if bid_type == BidTypes.OpenMisere:
+        return 500
+
+    # Return base value + 100 for each number over 6
+    return BASE_BID_VALUES[bid_type] + 100*(number-6)
+
+
+def gen_all_bids():
+    for bid_type in BidTypes:
+        # Special case for Misere and OpenMisere
+        if bid_type in {BidTypes.Misere, BidTypes.OpenMisere}:
+            yield Bid(bid_type, None, get_bid_points(bid_type, None))
+            continue
+
+        # Cover all bids from 6 to 10
+        for number in range(6,11):
+            yield Bid(bid_type, number, get_bid_points(bid_type, number))
