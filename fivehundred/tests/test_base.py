@@ -6,6 +6,7 @@ from fivehundred.base import (
     Card,
     CardValues,
     CardSuits,
+    gen_all_bids,
 )
 
 
@@ -45,3 +46,38 @@ def test_card_string(value, suit, expected_result):
 def test_bid_string(number, bid_type, points, expected_result):
     """Test that str(bid) works as expected."""
     assert str(Bid(number=number, bid_type=bid_type, points=points)) == expected_result
+
+
+def test_gen_all_bids():
+    """Test that gen_all_bids works as expected."""
+    all_bids = list(gen_all_bids())
+
+    assert all_bids == [
+        Bid(number=6, bid_type=BidTypes.Spades, points=40),
+        Bid(number=7, bid_type=BidTypes.Spades, points=140),
+        Bid(number=8, bid_type=BidTypes.Spades, points=240),
+        Bid(number=9, bid_type=BidTypes.Spades, points=340),
+        Bid(number=10, bid_type=BidTypes.Spades, points=440),
+        Bid(number=6, bid_type=BidTypes.Clubs, points=60),
+        Bid(number=7, bid_type=BidTypes.Clubs, points=160),
+        Bid(number=8, bid_type=BidTypes.Clubs, points=260),
+        Bid(number=9, bid_type=BidTypes.Clubs, points=360),
+        Bid(number=10, bid_type=BidTypes.Clubs, points=460),
+        Bid(number=6, bid_type=BidTypes.Diamonds, points=80),
+        Bid(number=7, bid_type=BidTypes.Diamonds, points=180),
+        Bid(number=8, bid_type=BidTypes.Diamonds, points=280),
+        Bid(number=9, bid_type=BidTypes.Diamonds, points=380),
+        Bid(number=10, bid_type=BidTypes.Diamonds, points=480),
+        Bid(number=6, bid_type=BidTypes.Hearts, points=100),
+        Bid(number=7, bid_type=BidTypes.Hearts, points=200),
+        Bid(number=8, bid_type=BidTypes.Hearts, points=300),
+        Bid(number=9, bid_type=BidTypes.Hearts, points=400),
+        Bid(number=10, bid_type=BidTypes.Hearts, points=500),
+        Bid(number=6, bid_type=BidTypes.NoTrumps, points=120),
+        Bid(number=7, bid_type=BidTypes.NoTrumps, points=220),
+        Bid(number=8, bid_type=BidTypes.NoTrumps, points=320),
+        Bid(number=9, bid_type=BidTypes.NoTrumps, points=420),
+        Bid(number=10, bid_type=BidTypes.NoTrumps, points=520),
+        Bid(number=None, bid_type=BidTypes.Misere, points=250),
+        Bid(number=None, bid_type=BidTypes.OpenMisere, points=500),
+    ]

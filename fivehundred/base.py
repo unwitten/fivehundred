@@ -118,9 +118,9 @@ def gen_all_bids():
     for bid_type in BidTypes:
         # Special case for Misere and OpenMisere
         if bid_type in {BidTypes.Misere, BidTypes.OpenMisere}:
-            yield Bid(bid_type, None, get_bid_points(bid_type, None))
+            yield Bid(number=None, bid_type=bid_type, points=get_bid_points(bid_type, None))
             continue
 
         # Cover all bids from 6 to 10
         for number in range(6, 11):
-            yield Bid(bid_type, number, get_bid_points(bid_type, number))
+            yield Bid(number=number, bid_type=bid_type, points=get_bid_points(bid_type, number))
