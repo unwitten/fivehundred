@@ -32,9 +32,9 @@ class BidTypes(Enum):
     Clubs = 'Clubs'
     Diamonds = 'Diamonds'
     Hearts = 'Hearts'
-    NoTrumps = 'NoTrumps'
+    NoTrumps = 'No Trumps'
     Misere = 'Misere'
-    OpenMisere = 'OpenMisere'
+    OpenMisere = 'Open Misere'
 
 
 BASE_BID_VALUES = {
@@ -59,7 +59,7 @@ class Card(namedtuple("Card", ["value", "suit"])):
 
 
 # lightweight object to hold information about a bid
-class Bid(namedtuple("Bid", ["bid_type", "number", "points"])):
+class Bid(namedtuple("Bid", ["number", "bid_type", "points"])):
     __slots__ = ()
 
     def __str__(self):
@@ -122,5 +122,5 @@ def gen_all_bids():
             continue
 
         # Cover all bids from 6 to 10
-        for number in range(6,11):
+        for number in range(6, 11):
             yield Bid(bid_type, number, get_bid_points(bid_type, number))
