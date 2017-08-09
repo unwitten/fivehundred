@@ -70,13 +70,20 @@ class Bid(namedtuple("Bid", ["number", "bid_type", "points"])):
         return f"{self.number} {self.bid_type.value} ({self.points})"
 
 
+# lightweight object to hold information about a player
 class Player:
-    def __init__(self, name, hand):
+    def __init__(self, name):
         self.name = name
         self.hand = []
 
     def __str__(self):
         return self.name
+
+    def reset_hand(self):
+        """
+        Reset a player's hand to be empty for the next round of dealing.
+        """
+        self.hand = []
 
 
 def suit_is_red(suit: CardSuits):

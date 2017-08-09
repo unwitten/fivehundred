@@ -6,8 +6,31 @@ from fivehundred.base import (
     Card,
     CardValues,
     CardSuits,
+    Player,
     gen_all_bids,
 )
+
+
+@pytest.fixture
+def fixture_player_empty_hand():
+    return Player(name="Chang")
+
+
+@pytest.fixture
+def fixture_player_full_hand(fixture_player_empty_hand):
+    player = fixture_player_empty_hand
+    player.hand.append(Card(value=CardValues.Four, suit=CardSuits.Hearts))
+    player.hand.append(Card(value=CardValues.Five, suit=CardSuits.Spades))
+    player.hand.append(Card(value=CardValues.Six, suit=CardSuits.Clubs))
+    player.hand.append(Card(value=CardValues.Seven, suit=CardSuits.Diamonds))
+    player.hand.append(Card(value=CardValues.Eight, suit=CardSuits.Hearts))
+    player.hand.append(Card(value=CardValues.Nine, suit=CardSuits.Spades))
+    player.hand.append(Card(value=CardValues.Ten, suit=CardSuits.Clubs))
+    player.hand.append(Card(value=CardValues.Jack, suit=CardSuits.Diamonds))
+    player.hand.append(Card(value=CardValues.Queen, suit=CardSuits.Hearts))
+    player.hand.append(Card(value=CardValues.Joker, suit=None))
+
+    return player
 
 
 @pytest.mark.parametrize(
@@ -81,3 +104,29 @@ def test_gen_all_bids():
         Bid(number=None, bid_type=BidTypes.Misere, points=250),
         Bid(number=None, bid_type=BidTypes.OpenMisere, points=500),
     ]
+
+
+def test_player():
+    """Test that the Player class works as expected."""
+    player = Player(name="Chang")
+
+    assert player.hand == []
+    assert player.name == "Chang"
+    assert str(player) == "Chang"
+
+
+def test_player_reset_hand(fixture_player_full_hand, fixture_player_empty_hand):
+    """Test that player.reset_hand works as expected."""
+    player = fixture_player_full_hand
+
+    assert player.hand == [
+        Card(value=CardValues.Four, suit=CardSuits.Hearts), Card(value=CardValues.Five, suit=CardSuits.Spades),
+        Card(value=CardValues.Six, suit=CardSuits.Clubs), Card(value=CardValues.Seven, suit=CardSuits.Diamonds),
+        Card(value=CardValues.Eight, suit=CardSuits.Hearts), Card(value=CardValues.Nine, suit=CardSuits.Spades),
+        Card(value=CardValues.Ten, suit=CardSuits.Clubs), Card(value=CardValues.Jack, suit=CardSuits.Diamonds),
+        Card(value=CardValues.Queen, suit=CardSuits.Hearts), Card(value=CardValues.Joker, suit=None),
+    ]
+
+    player.reset_hand()
+
+    assert player.hand == fixture_player_empty_hand.hand == []
