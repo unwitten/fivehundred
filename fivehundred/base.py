@@ -3,7 +3,10 @@ Classic to represent basic objects like cards, bids and players.
 """
 from collections import namedtuple
 from enum import Enum
-from typing import List, Union
+from itertools import cycle
+from typing import Iterable, List, Union
+
+MAX_PLAYER_HAND_SIZE = 10
 
 
 class CardSuits(Enum):
@@ -47,6 +50,10 @@ BASE_BID_VALUES = {
 }
 
 
+class PlayerHandSizeError(Exception):
+    pass
+
+
 # lightweight object to hold information about a card
 class Card(namedtuple("Card", ["value", "suit"])):
     __slots__ = ()
@@ -85,6 +92,17 @@ class Player:
         Reset a player's hand to be empty for the next round of dealing.
         """
         self.hand = []
+
+    def give_card(self, card: Card):
+        """
+        Add a card to the players hand.
+
+        Raise an exception if the player already has a full hand.
+        """
+        if len(self.hand) >= MAX_PLAYER_HAND_SIZE:
+            raise PlayerHandSizeError("{self.name} has a full hand")
+        else:
+            self.hand.append(card)
 
 
 def suit_is_red(suit: CardSuits):
@@ -132,3 +150,19 @@ def gen_all_bids():
         # Cover all bids from 6 to 10
         for number in range(6, 11):
             yield Bid(number=number, bid_type=bid_type, points=get_bid_points(bid_type, number))
+
+
+def deal_cards(players: List[Player], deck: Iterable[Card]):
+    """
+    Deal cards from a full deck to the players until their hands are full. Returns the remaining cards.
+
+    Assumes the deck has already been shuffled.
+    """
+    kitty = list()
+    for player, card in zip(cycle(players), deck):
+        try:
+            player.give_card(card)
+        except PlayerHandSizeError:
+            kitty.append(card)
+
+    return kitty
