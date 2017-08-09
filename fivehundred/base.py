@@ -6,6 +6,7 @@ from enum import Enum
 from itertools import cycle
 from typing import Iterable, List, Union
 
+
 MAX_PLAYER_HAND_SIZE = 10
 
 
@@ -101,21 +102,37 @@ class Player:
         """
         if len(self.hand) >= MAX_PLAYER_HAND_SIZE:
             raise PlayerHandSizeError("{self.name} has a full hand")
-        else:
-            self.hand.append(card)
+
+        # Otherwise, the player has the space for this card
+        self.hand.append(card)
 
 
 def suit_is_red(suit: CardSuit):
-    if suit in {CardSuit.Diamonds, CardSuit.Hearts}:
-        return True
-    return False
+    """
+    Determine whether or not a suit is red.
+
+    :param suit: a card suit
+    :return: True if the card suit is red, False otherwise
+    """
+    return suit in {CardSuit.Diamonds, CardSuit.Hearts}
 
 
 def card_is_red(card: Card):
+    """
+    Determine whether or not a card is red.
+
+    :param card: a card
+    :return: True if the card is red, False otherwise
+    """
     return suit_is_red(card.suit)
 
 
 def gen_game_deck():
+    """
+    Generate the initial deck of cards for a standard game.
+
+    :return: a generator of cards
+    """
     for value in CardValue:
         # Special case for Joker
         if value == CardValue.Joker:
@@ -130,6 +147,13 @@ def gen_game_deck():
 
 
 def get_bid_points(bid_type: BidType, number: Union[int, float]):
+    """
+    Determine the points associated with a given bid.
+
+    :param bid_type: a bid type
+    :param number: the number of tricks to win
+    :return: the number of points awarded for completing the bid
+    """
     # Special case for Misere and OpenMisere
     if bid_type == BidType.Misere:
         return 250
@@ -141,6 +165,11 @@ def get_bid_points(bid_type: BidType, number: Union[int, float]):
 
 
 def gen_all_bids():
+    """
+    Generate all possible bids for a standard game.
+
+    :return: a generator of bids
+    """
     for bid_type in BidType:
         # Special case for Misere and OpenMisere
         if bid_type in {BidType.Misere, BidType.OpenMisere}:
@@ -152,11 +181,15 @@ def gen_all_bids():
             yield Bid(number=number, bid_type=bid_type, points=get_bid_points(bid_type, number))
 
 
-def deal_cards(players: List[Player], deck: Iterable[Card]):
+def deal_cards(deck: Iterable[Card], players: List[Player]):
     """
-    Deal cards from a full deck to the players until their hands are full. Returns the remaining cards.
+    Deal cards from a full deck to the players until their hands are full.
 
-    Assumes the deck has already been shuffled.
+    Assume the deck has already been shuffled and return the remaining cards as 'the kitty'.
+
+    :param deck: an iterable of cards to be dealt
+    :param players: a list of players to deal the cards to
+    :return: the leftover cards for 'the kitty'
     """
     kitty = list()
     for player, card in zip(cycle(players), deck):
