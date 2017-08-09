@@ -3,6 +3,7 @@ Classic to represent basic objects like cards, bids and players.
 """
 from collections import namedtuple
 from enum import Enum
+from typing import List, Union
 
 
 class CardSuits(Enum):
@@ -72,9 +73,9 @@ class Bid(namedtuple("Bid", ["number", "bid_type", "points"])):
 
 # lightweight object to hold information about a player
 class Player:
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.hand = []
+        self.hand: List[Card] = []
 
     def __str__(self):
         return self.name
@@ -110,7 +111,7 @@ def gen_game_deck():
             yield Card(value, suit)
 
 
-def get_bid_points(bid_type, number):
+def get_bid_points(bid_type: BidTypes, number: Union[int, float]):
     # Special case for Misere and OpenMisere
     if bid_type == BidTypes.Misere:
         return 250
@@ -118,7 +119,7 @@ def get_bid_points(bid_type, number):
         return 500
 
     # Return base value + 100 for each number over 6
-    return BASE_BID_VALUES[bid_type] + 100*(number-6)
+    return BASE_BID_VALUES[bid_type] + 100 * (number - 6)
 
 
 def gen_all_bids():
