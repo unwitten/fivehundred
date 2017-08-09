@@ -9,14 +9,14 @@ from typing import Iterable, List, Union
 MAX_PLAYER_HAND_SIZE = 10
 
 
-class CardSuits(Enum):
+class CardSuit(Enum):
     Spades = 'Spades'
     Clubs = 'Clubs'
     Diamonds = 'Diamonds'
     Hearts = 'Hearts'
 
 
-class CardValues(Enum):
+class CardValue(Enum):
     Four = 'Four'
     Five = 'Five'
     Six = 'Six'
@@ -31,7 +31,7 @@ class CardValues(Enum):
     Joker = 'Joker'
 
 
-class BidTypes(Enum):
+class BidType(Enum):
     Spades = 'Spades'
     Clubs = 'Clubs'
     Diamonds = 'Diamonds'
@@ -42,11 +42,11 @@ class BidTypes(Enum):
 
 
 BASE_BID_VALUES = {
-    BidTypes.Spades: 40,
-    BidTypes.Clubs: 60,
-    BidTypes.Diamonds: 80,
-    BidTypes.Hearts: 100,
-    BidTypes.NoTrumps: 120
+    BidType.Spades: 40,
+    BidType.Clubs: 60,
+    BidType.Diamonds: 80,
+    BidType.Hearts: 100,
+    BidType.NoTrumps: 120,
 }
 
 
@@ -60,7 +60,7 @@ class Card(namedtuple("Card", ["value", "suit"])):
 
     def __str__(self):
         # Special case because the joker doesn't have a suit?
-        if self.value == CardValues.Joker:
+        if self.value == CardValue.Joker:
             return self.value.value
 
         return f"{self.value.value} of {self.suit.value}"
@@ -72,7 +72,7 @@ class Bid(namedtuple("Bid", ["number", "bid_type", "points"])):
 
     def __str__(self):
         # Special case when Misere
-        if self.bid_type in {BidTypes.Misere, BidTypes.OpenMisere}:
+        if self.bid_type in {BidType.Misere, BidType.OpenMisere}:
             return f"{self.bid_type.value} ({self.points})"
 
         return f"{self.number} {self.bid_type.value} ({self.points})"
@@ -105,8 +105,8 @@ class Player:
             self.hand.append(card)
 
 
-def suit_is_red(suit: CardSuits):
-    if suit in {CardSuits.Diamonds, CardSuits.Hearts}:
+def suit_is_red(suit: CardSuit):
+    if suit in {CardSuit.Diamonds, CardSuit.Hearts}:
         return True
     return False
 
@@ -116,24 +116,24 @@ def card_is_red(card: Card):
 
 
 def gen_game_deck():
-    for value in CardValues:
+    for value in CardValue:
         # Special case for Joker
-        if value == CardValues.Joker:
+        if value == CardValue.Joker:
             yield Card(value, None)
             continue
 
-        for suit in CardSuits:
+        for suit in CardSuit:
             # Only red suits contain 4's
-            if value == CardValues.Four and not suit_is_red(suit):
+            if value == CardValue.Four and not suit_is_red(suit):
                 continue
             yield Card(value, suit)
 
 
-def get_bid_points(bid_type: BidTypes, number: Union[int, float]):
+def get_bid_points(bid_type: BidType, number: Union[int, float]):
     # Special case for Misere and OpenMisere
-    if bid_type == BidTypes.Misere:
+    if bid_type == BidType.Misere:
         return 250
-    if bid_type == BidTypes.OpenMisere:
+    if bid_type == BidType.OpenMisere:
         return 500
 
     # Return base value + 100 for each number over 6
@@ -141,9 +141,9 @@ def get_bid_points(bid_type: BidTypes, number: Union[int, float]):
 
 
 def gen_all_bids():
-    for bid_type in BidTypes:
+    for bid_type in BidType:
         # Special case for Misere and OpenMisere
-        if bid_type in {BidTypes.Misere, BidTypes.OpenMisere}:
+        if bid_type in {BidType.Misere, BidType.OpenMisere}:
             yield Bid(number=None, bid_type=bid_type, points=get_bid_points(bid_type, None))
             continue
 
