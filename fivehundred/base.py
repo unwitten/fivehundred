@@ -101,7 +101,7 @@ class Player:
         Raise an exception if the player already has a full hand.
         """
         if len(self.hand) >= MAX_PLAYER_HAND_SIZE:
-            raise PlayerHandSizeError("{self.name} has a full hand")
+            raise PlayerHandSizeError(f"{self} has a full hand")
 
         # Otherwise, the player has the space for this card
         self.hand.append(card)

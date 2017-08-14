@@ -1,6 +1,7 @@
 import pytest
 
 from fivehundred.base import (
+    PlayerHandSizeError,
     Bid,
     BidType,
     Card,
@@ -19,16 +20,16 @@ def fixture_player_empty_hand():
 @pytest.fixture
 def fixture_player_full_hand(fixture_player_empty_hand):
     player = fixture_player_empty_hand
-    player.hand.append(Card(value=CardValue.Four, suit=CardSuit.Hearts))
-    player.hand.append(Card(value=CardValue.Five, suit=CardSuit.Spades))
-    player.hand.append(Card(value=CardValue.Six, suit=CardSuit.Clubs))
-    player.hand.append(Card(value=CardValue.Seven, suit=CardSuit.Diamonds))
-    player.hand.append(Card(value=CardValue.Eight, suit=CardSuit.Hearts))
-    player.hand.append(Card(value=CardValue.Nine, suit=CardSuit.Spades))
-    player.hand.append(Card(value=CardValue.Ten, suit=CardSuit.Clubs))
-    player.hand.append(Card(value=CardValue.Jack, suit=CardSuit.Diamonds))
-    player.hand.append(Card(value=CardValue.Queen, suit=CardSuit.Hearts))
-    player.hand.append(Card(value=CardValue.Joker, suit=None))
+    player.give_card(Card(value=CardValue.Four, suit=CardSuit.Hearts))
+    player.give_card(Card(value=CardValue.Five, suit=CardSuit.Spades))
+    player.give_card(Card(value=CardValue.Six, suit=CardSuit.Clubs))
+    player.give_card(Card(value=CardValue.Seven, suit=CardSuit.Diamonds))
+    player.give_card(Card(value=CardValue.Eight, suit=CardSuit.Hearts))
+    player.give_card(Card(value=CardValue.Nine, suit=CardSuit.Spades))
+    player.give_card(Card(value=CardValue.Ten, suit=CardSuit.Clubs))
+    player.give_card(Card(value=CardValue.Jack, suit=CardSuit.Diamonds))
+    player.give_card(Card(value=CardValue.Queen, suit=CardSuit.Hearts))
+    player.give_card(Card(value=CardValue.Joker, suit=None))
 
     return player
 
@@ -130,3 +131,26 @@ def test_player_reset_hand(fixture_player_full_hand, fixture_player_empty_hand):
     player.reset_hand()
 
     assert player.hand == fixture_player_empty_hand.hand == []
+
+
+def test_player_give_card_empty_hand(fixture_player_empty_hand):
+    """Test that player.give_card works as expected for an empty hand."""
+    player = fixture_player_empty_hand
+
+    assert player.hand == []
+
+    player.give_card(Card(value=CardValue.Four, suit=CardSuit.Hearts))
+
+    assert player.hand == [Card(value=CardValue.Four, suit=CardSuit.Hearts)]
+
+
+def test_player_give_card_full_hand(fixture_player_full_hand):
+    """Test that player.give_card works as expected for a full hand."""
+    player = fixture_player_full_hand
+
+    assert len(player.hand) == 10
+
+    with pytest.raises(PlayerHandSizeError) as e:
+        player.give_card(Card(value=CardValue.Four, suit=CardSuit.Hearts))
+
+    assert "Chang has a full hand" in str(e)
